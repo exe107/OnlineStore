@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Product form</title>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-8">
+                <h2 class="text-center">New product</h2>
+                <form th:action="@{/products/add}" method="post" th:object="${product}">
+                    <div class="form-group">
+                        <label>Name: </label>
+                        <input class="form-control" th:field="*{name}" placeholder="Name" />
+                        <div class="alert alert-danger" th:each="error : ${#fields.errors('name')}" th:text="|Name ${error}|"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description: </label>
+                        <textarea class="form-control" th:field="*{description}" placeholder="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL: </label>
+                        <input class="form-control" th:field="*{url}" placeholder="URL" />
+                    </div>
+                    <div class="form-group">
+                        <label>Category: </label>
+                        <select class="form-control" id="category.id" name="category.id">
+                            <option th:value="${null}" th:selected="*{category} == null" disabled>Select a category</option>
+                            <option th:each="cat : ${categories}"
+                                    th:value="${cat.id}"
+                                    th:text="${cat.name}"
+                                    th:selected="*{category} and *{category.id} == ${cat.id}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('category')}">Please select a category</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Manufacturer: </label>
+                        <select class="form-control" id="manufacturer.id" name="manufacturer.id">
+                            <option th:value="${null}" th:selected="*{manufacturer} == null" disabled>Select a manufacturer</option>
+                            <option th:each="man : ${manufacturers}"
+                                    th:value="${man.id}"
+                                    th:text="${man.name}"
+                                    th:selected="*{manufacturer} and *{manufacturer.id} == ${man.id}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('manufacturer')}">Please select a manufacturer</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+</body>
+</html>
