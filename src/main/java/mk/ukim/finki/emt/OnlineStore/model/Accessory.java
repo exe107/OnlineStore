@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Category {
+public class Accessory {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
     private String name;
+    private String description;
 
-    @OneToMany(mappedBy = "category")
+    @ManyToMany(mappedBy = "accessories")
     private List<Product> products;
 
-    public Category() {
+    public Accessory() {
         products = new ArrayList<>();
     }
 
@@ -34,6 +35,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<Product> getProducts() {

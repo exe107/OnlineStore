@@ -3,75 +3,56 @@ package mk.ukim.finki.emt.OnlineStore.web;
 import mk.ukim.finki.emt.OnlineStore.model.Category;
 import mk.ukim.finki.emt.OnlineStore.model.Manufacturer;
 import mk.ukim.finki.emt.OnlineStore.model.Product;
+import mk.ukim.finki.emt.OnlineStore.service.CategoryService;
+import mk.ukim.finki.emt.OnlineStore.service.ManufacturerService;
+import mk.ukim.finki.emt.OnlineStore.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/products")
 public class StoreController {
-    private List<Category> categories = new ArrayList<>(
-            Arrays.asList(
-                    new Category(Long.valueOf(0), "Shirts"),
-                    new Category(Long.valueOf(1), "Shorts"),
-                    new Category(Long.valueOf(2), "Shoes")
-            )
-    );
 
-    private List<Manufacturer> manufacturers = new ArrayList<>(
-            Arrays.asList(
-                    new Manufacturer(Long.valueOf(0), "Nike"),
-                    new Manufacturer(Long.valueOf(1), "Adidas"),
-                    new Manufacturer(Long.valueOf(2), "Puma")
-            )
-    );
+    @Autowired
+    private ProductService productService;
 
-    private List<Product> products = new ArrayList<>(
-            Arrays.asList(
-                    new Product(Long.valueOf(0),
-                            "Nike shirt",
-                            "XL shirt",
-                            "https://images-na.ssl-images-amazon.com/images/I/61OLLS-CDoL._UX679_.jpg",
-                            categories.get(0),
-                            manufacturers.get(0)),
-                    new Product(Long.valueOf(1),
-                            "Adidas shorts",
-                            "Shorts for men",
-                            "https://www.sportspower.com.au/wp-content/uploads/2018/07/BS5039-1295x1295.jpg",
-                            categories.get(1),
-                            manufacturers.get(1)),
-                    new Product(Long.valueOf(2),
-                            "Puma shoes",
-                            "Shoes size 42",
-                            "https://pumaimages.azureedge.net/images/355110/01/sv01/fnd/PNA/h/600/w/600",
-                            categories.get(2),
-                            manufacturers.get(2))
-            )
-    );
+    @Autowired
+    private CategoryService categoryService;
 
-    @GetMapping("/products")
-    private void showProducts(Model model) {
+    @Autowired
+    private ManufacturerService manufacturerService;
+
+    @GetMapping
+    private String showProducts(Model model) {
+
+        List<Product> products = productService.getProducts();
 
         model.addAttribute("products", products);
+
+        return "products";
     }
 
-    @GetMapping("/product/{productId}")
-    private String showProduct(@PathVariable int productId, Model model) {
+    @GetMapping("/{productId}")
+    private String showProduct(@PathVariable Long productId, Model model) {
 
-        Product product = products.get(productId);
+        Product product = productService.getProduct(productId);
         model.addAttribute("product", product);
 
         return "product";
     }
 
-    @GetMapping("/products/add")
+    @GetMapping("/add")
     private String createProduct(Model model) {
+
+        List<Category> categories = categoryService.getCategories();
+        List<Manufacturer> manufacturers = manufacturerService.getManufacturers();
 
         model.addAttribute("product", new Product());
         model.addAttribute("categories", categories);
@@ -80,8 +61,11 @@ public class StoreController {
         return "create-product";
     }
 
-    @PostMapping("/products/add")
+    @RequestMapping("/add")
     private String addProduct(@Valid Product product, BindingResult bindingResult, Model model) {
+
+        List<Category> categories = categoryService.getCategories();
+        List<Manufacturer> manufacturers = manufacturerService.getManufacturers();
 
         if (bindingResult.hasErrors()) {
 
@@ -105,9 +89,30 @@ public class StoreController {
 
         product.setManufacturer(selectedManufacturer.get());
         product.setCategory(selectedCategory.get());
-        product.setId(Long.valueOf(products.size()));
-        products.add(product);
+        productService.saveProduct(product);
 
         return "redirect:/products";
+    }
+
+    @GetMapping("/{productId}/edit")
+    private String editProduct(@PathVariable Long productId, Model model) {
+
+        Product product = productService.getProduct(productId);
+        model.addAttribute("product", product);
+
+        return "edit-product";
+    }
+
+    @PatchMapping("/{productId}")
+    private String updateProduct(@PathVariable Long productId, Product formProduct) {
+
+        Product product = productService.getProduct(productId);
+        product.setDescription(formProduct.getDescription());
+        product.setUrl(formProduct.getUrl());
+        product.setPrice(formProduct.getPrice());
+
+        productService.saveProduct(product);
+
+        return String.format("redirect:/products/%d", productId);
     }
 }

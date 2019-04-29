@@ -1,15 +1,23 @@
 package mk.ukim.finki.emt.OnlineStore.model;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Manufacturer {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
+
     private String name;
 
-    public Manufacturer() { }
+    @OneToMany(mappedBy = "manufacturer")
+    private List<Product> products;
 
-    public Manufacturer(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Manufacturer() {
+        products = new ArrayList<>();
     }
 
     public Long getId() {
@@ -26,5 +34,13 @@ public class Manufacturer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }

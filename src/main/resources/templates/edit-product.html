@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Product</title>
+    <title>Product form</title>
     <link href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
@@ -12,18 +12,20 @@
     <div class="row">
         <div class="col-2"></div>
         <div class="col-8">
-            <div th:object="${product}">
-                <div class="text-center">
-                    <h2>Product details</h2>
-                    <img th:src="*{url}" width="300" height="300" />
-                </div>
+            <h2 class="text-center">New product</h2>
+            <form th:action="@{/products/{productId}(productId=${product.id})}" method="post" th:object="${product}">
+                <input type="hidden" name="_method" value="patch" />
                 <div class="form-group">
                     <label>Name: </label>
                     <input class="form-control" th:field="*{name}" readonly disabled />
                 </div>
                 <div class="form-group">
                     <label>Description: </label>
-                    <textarea class="form-control" th:field="*{description}" readonly disabled></textarea>
+                    <textarea class="form-control" th:field="*{description}" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>URL: </label>
+                    <input class="form-control" th:field="*{url}" placeholder="URL" />
                 </div>
                 <div class="form-group">
                     <label>Category: </label>
@@ -35,12 +37,10 @@
                 </div>
                 <div class="form-group">
                     <label>Price: </label>
-                    <input class="form-control" th:value="*{price}" readonly disabled />
+                    <input class="form-control" type="number" th:field="*{price}" placeholder="Price" />
                 </div>
-            </div>
-            <a th:href="@{/products/{productId}/edit(productId=${product.id})}">
-                <button class="btn btn-primary">Edit</button>
-            </a>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
         <div class="col-2"></div>
     </div>

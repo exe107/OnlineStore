@@ -1,10 +1,16 @@
 package mk.ukim.finki.emt.OnlineStore.model;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Product {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     @NotBlank
@@ -12,22 +18,21 @@ public class Product {
 
     private String description;
     private String url;
+    private int price;
 
     @NotNull
+    @ManyToOne
     private Category category;
 
     @NotNull
+    @ManyToOne
     private Manufacturer manufacturer;
 
-    public Product() { }
+    @ManyToMany
+    private List<Accessory> accessories;
 
-    public Product(Long id, String name, String description, String url, Category category, Manufacturer manufacturer) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.url = url;
-        this.category = category;
-        this.manufacturer = manufacturer;
+    public Product() {
+        accessories = new ArrayList<>();
     }
 
     public Long getId() {
@@ -62,6 +67,14 @@ public class Product {
         this.url = url;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -76,5 +89,13 @@ public class Product {
 
     public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
+    }
+
+    public List<Accessory> getAccessories() {
+        return accessories;
+    }
+
+    public void setAccessories(List<Accessory> accessories) {
+        this.accessories = accessories;
     }
 }
