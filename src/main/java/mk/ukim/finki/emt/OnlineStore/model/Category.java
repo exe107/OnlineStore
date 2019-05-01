@@ -1,8 +1,6 @@
 package mk.ukim.finki.emt.OnlineStore.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Category {
@@ -13,11 +11,8 @@ public class Category {
 
     private String name;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
-
     public Category() {
-        products = new ArrayList<>();
+
     }
 
     public Long getId() {
@@ -34,13 +29,5 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 }

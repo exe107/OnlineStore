@@ -1,8 +1,10 @@
 package mk.ukim.finki.emt.OnlineStore.web;
 
+import mk.ukim.finki.emt.OnlineStore.model.Accessory;
 import mk.ukim.finki.emt.OnlineStore.model.Category;
 import mk.ukim.finki.emt.OnlineStore.model.Manufacturer;
 import mk.ukim.finki.emt.OnlineStore.model.Product;
+import mk.ukim.finki.emt.OnlineStore.service.AccessoryService;
 import mk.ukim.finki.emt.OnlineStore.service.CategoryService;
 import mk.ukim.finki.emt.OnlineStore.service.ManufacturerService;
 import mk.ukim.finki.emt.OnlineStore.service.ProductService;
@@ -23,6 +25,9 @@ public class StoreRestController {
 
     @Autowired
     private ManufacturerService manufacturerService;
+
+    @Autowired
+    private AccessoryService accessoryService;
 
     @RequestMapping("/products")
     private List<Product> getProducts() {
@@ -60,10 +65,22 @@ public class StoreRestController {
         productService.saveProduct(product);
     }
 
+    @GetMapping("/categories")
+    private List<Category> getCategories() {
+
+        return categoryService.getCategories();
+    }
+
     @PostMapping("/categories")
     private void saveCategory(@RequestBody Category category) {
 
         categoryService.saveCategory(category);
+    }
+
+    @GetMapping("/manufacturers")
+    private List<Manufacturer> getManufacturers() {
+
+        return manufacturerService.getManufacturers();
     }
 
     @PostMapping("/manufacturers")
@@ -72,4 +89,15 @@ public class StoreRestController {
         manufacturerService.saveManufacturer(manufacturer);
     }
 
+    @GetMapping("/accessories")
+    private List<Accessory> getAccessories() {
+
+        return accessoryService.getAccessories();
+    }
+
+    @PostMapping("/accessories")
+    private void saveAccessory(@RequestBody Accessory accessory) {
+
+        accessoryService.saveAccessory(accessory);
+    }
 }

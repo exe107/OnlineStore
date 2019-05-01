@@ -23,4 +23,16 @@ public class AccessoryServiceImpl implements AccessoryService {
 
         return accessories;
     }
+
+    @Override
+    public Accessory getAccessory(Long id) {
+
+        return accessoryRepository.findById(id).get();
+    }
+
+    @Override
+    public void saveAccessory(Accessory accessory) {
+
+        accessoryRepository.save(accessory);
+    }
 }

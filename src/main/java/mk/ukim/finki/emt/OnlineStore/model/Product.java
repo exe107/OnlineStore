@@ -28,7 +28,8 @@ public class Product {
     @ManyToOne
     private Manufacturer manufacturer;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "product_accessory", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "accessory_id"))
     private List<Accessory> accessories;
 
     public Product() {

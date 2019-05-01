@@ -50,6 +50,14 @@
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('manufacturer')}">Please select a manufacturer</div>
                     </div>
                     <div class="form-group">
+                        <label>Accessories: </label>
+                        <select multiple class="form-control" id="accessories" name="accessories">
+                            <option th:each="acc : ${accessories}"
+                                    th:value="${acc.id}"
+                                    th:text="${acc.name}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Price: </label>
                         <input class="form-control" type="number" th:field="*{price}" placeholder="Price" />
                     </div>
