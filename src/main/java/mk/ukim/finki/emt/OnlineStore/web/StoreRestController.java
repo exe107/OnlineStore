@@ -35,13 +35,13 @@ public class StoreRestController {
         return productService.getProducts();
     }
 
-    @GetMapping("products/{id}")
+    @GetMapping("/products/{id}")
     private Product getProduct(@PathVariable Long id) {
 
         return productService.getProduct(id);
     }
 
-    @GetMapping("product/category/{categoryId}")
+    @GetMapping("/product/category/{categoryId}")
     private List<Product> getProductsByCategory(@PathVariable Long categoryId) {
 
         return productService.getProductsByCategory(categoryId);
