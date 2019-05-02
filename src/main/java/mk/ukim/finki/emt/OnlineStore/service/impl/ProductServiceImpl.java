@@ -4,6 +4,7 @@ import mk.ukim.finki.emt.OnlineStore.model.Product;
 import mk.ukim.finki.emt.OnlineStore.persistence.ProductRepository;
 import mk.ukim.finki.emt.OnlineStore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -56,5 +57,10 @@ public class ProductServiceImpl implements ProductService {
         int totalSum = products.stream().mapToInt(product -> product.getPrice()).sum();
 
         return new Long(totalSum);
+    }
+
+    @Override
+    public List<Product> getProductsByPage(Pageable pageable) {
+        return productRepository.findAll(pageable).getContent();
     }
 }

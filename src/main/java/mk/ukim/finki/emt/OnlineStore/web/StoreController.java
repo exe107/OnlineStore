@@ -9,6 +9,8 @@ import mk.ukim.finki.emt.OnlineStore.service.CategoryService;
 import mk.ukim.finki.emt.OnlineStore.service.ManufacturerService;
 import mk.ukim.finki.emt.OnlineStore.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,6 +42,17 @@ public class StoreController {
 
         List<Product> products = productService.getProducts();
 
+        model.addAttribute("products", products);
+
+        return "products";
+    }
+
+    @GetMapping("/{page}/{productsCount}")
+    private String showProductsByPage(@PathVariable int page, @PathVariable int productsCount, Model model) {
+
+        Pageable pageable = PageRequest.of(page, productsCount);
+
+        List<Product> products = productService.getProductsByPage(pageable);
         model.addAttribute("products", products);
 
         return "products";

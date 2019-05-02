@@ -1,6 +1,7 @@
 package mk.ukim.finki.emt.OnlineStore.service;
 
 import mk.ukim.finki.emt.OnlineStore.model.Product;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ProductService {
     List<Product> getProductsByCategoryAndManufacturer(Long categoryId, Long manufacturerId);
 
     Long getProductsTotalSumByCategory(Long categoryId);
+
+    List<Product> getProductsByPage(Pageable pageable);
 }
