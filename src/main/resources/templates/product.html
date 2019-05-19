@@ -15,11 +15,11 @@
             <div th:object="${product}">
                 <div class="text-center">
                     <h2>Product details</h2>
-                    <img th:src="*{url}" width="300" height="300" />
+                    <img th:src="*{url}" width="300" height="300"/>
                 </div>
                 <div class="form-group">
                     <label>Name: </label>
-                    <input class="form-control" th:field="*{name}" readonly disabled />
+                    <input class="form-control" th:field="*{name}" readonly disabled/>
                 </div>
                 <div class="form-group">
                     <label>Description: </label>
@@ -27,20 +27,47 @@
                 </div>
                 <div class="form-group">
                     <label>Category: </label>
-                    <input class="form-control" th:value="*{category.name}" readonly disabled />
+                    <input class="form-control" th:value="*{category.name}" readonly disabled/>
                 </div>
                 <div class="form-group">
                     <label>Manufacturer: </label>
-                    <input class="form-control" th:value="*{manufacturer.name}" readonly disabled />
+                    <input class="form-control" th:value="*{manufacturer.name}" readonly disabled/>
                 </div>
                 <div class="form-group">
                     <label>Price: </label>
-                    <input class="form-control" th:value="*{price}" readonly disabled />
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input class="form-control" th:value="*{price}" readonly disabled/>
+                    </div>
+
                 </div>
             </div>
-            <a th:href="@{/products/{productId}/edit(productId=${product.id})}">
-                <button class="btn btn-primary">Edit</button>
-            </a>
+            <div class="d-flex">
+                <form th:action="@{/products/{productId}/charge(productId=${product.id})}"
+                      method='POST' id='checkout-form'>
+                    <input type='hidden' th:value='${amount}' name='amount'/>
+                    <script
+                            src='https://checkout.stripe.com/checkout.js'
+                            class='stripe-button'
+                            th:attr='data-key=${stripePublicKey},
+                            data-amount=${amount * 100}'
+                            data-name='EMT'
+                            data-description='Lab'
+                            data-image
+                                    ='https://www.finki.ukim.mk/sites/default/files/styles/large/public/logo-large-500x500_2_2.png?itok=5e2UKe73'
+                            data-locale='auto'
+                            data-zip-code='false'>
+                    </script>
+                </form>
+                <a class="ml-auto" th:href="@{/products/{productId}/edit(productId=${product.id})}">
+                    <button class="btn btn-primary">Edit</button>
+                </a>
+            </div>
+            <div th:if="${message}" class="mt-5 alert alert-success alert-dismissible fade show text-center">
+                <h2 th:text="${message}"></h2>
+            </div>
         </div>
         <div class="col-2"></div>
     </div>

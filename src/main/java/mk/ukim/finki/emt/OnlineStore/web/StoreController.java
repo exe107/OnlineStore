@@ -1,21 +1,21 @@
 package mk.ukim.finki.emt.OnlineStore.web;
 
-import mk.ukim.finki.emt.OnlineStore.model.Accessory;
-import mk.ukim.finki.emt.OnlineStore.model.Category;
-import mk.ukim.finki.emt.OnlineStore.model.Manufacturer;
-import mk.ukim.finki.emt.OnlineStore.model.Product;
-import mk.ukim.finki.emt.OnlineStore.service.AccessoryService;
-import mk.ukim.finki.emt.OnlineStore.service.CategoryService;
-import mk.ukim.finki.emt.OnlineStore.service.ManufacturerService;
-import mk.ukim.finki.emt.OnlineStore.service.ProductService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Charge;
+import mk.ukim.finki.emt.OnlineStore.model.*;
+import mk.ukim.finki.emt.OnlineStore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
@@ -36,6 +36,30 @@ public class StoreController {
 
     @Autowired
     private AccessoryService accessoryService;
+
+    @Autowired
+    private TransactionService transactionService;
+
+    @Value("${STRIPE_PUBLIC_KEY}")
+    private String stripePublicKey;
+
+    @PostConstruct
+    void init() {
+        Category category = new Category();
+        category.setName("category");
+        categoryService.saveCategory(category);
+
+        Manufacturer manufacturer = new Manufacturer();
+        manufacturer.setName("manufacturer");
+        manufacturerService.saveManufacturer(manufacturer);
+
+        Product product = new Product();
+        product.setName("product");
+        product.setPrice(1000);
+        product.setCategory(categoryService.getCategories().get(0));
+        product.setManufacturer(manufacturerService.getManufacturers().get(0));
+        productService.saveProduct(product);
+    }
 
     @GetMapping
     private String showProducts(Model model) {
@@ -63,6 +87,8 @@ public class StoreController {
 
         Product product = productService.getProduct(productId);
         model.addAttribute("product", product);
+        model.addAttribute("amount", product.getPrice());
+        model.addAttribute("stripePublicKey", stripePublicKey);
 
         return "product";
     }
@@ -150,6 +176,16 @@ public class StoreController {
         product.setPrice(formProduct.getPrice());
 
         productService.saveProduct(product);
+
+        return String.format("redirect:/products/%d", productId);
+    }
+
+    @PostMapping("{productId}/charge")
+    private String charge(@PathVariable Long productId, Transaction transaction, RedirectAttributes redirectAttributes) throws StripeException {
+
+        transactionService.charge(transaction);
+
+        redirectAttributes.addFlashAttribute("message", "Payment successful");
 
         return String.format("redirect:/products/%d", productId);
     }
