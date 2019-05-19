@@ -1,13 +1,7 @@
 package mk.ukim.finki.emt.OnlineStore.web;
 
-import mk.ukim.finki.emt.OnlineStore.model.Accessory;
-import mk.ukim.finki.emt.OnlineStore.model.Category;
-import mk.ukim.finki.emt.OnlineStore.model.Manufacturer;
-import mk.ukim.finki.emt.OnlineStore.model.Product;
-import mk.ukim.finki.emt.OnlineStore.service.AccessoryService;
-import mk.ukim.finki.emt.OnlineStore.service.CategoryService;
-import mk.ukim.finki.emt.OnlineStore.service.ManufacturerService;
-import mk.ukim.finki.emt.OnlineStore.service.ProductService;
+import mk.ukim.finki.emt.OnlineStore.model.*;
+import mk.ukim.finki.emt.OnlineStore.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +22,9 @@ public class StoreRestController {
 
     @Autowired
     private AccessoryService accessoryService;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @RequestMapping("/products")
     private List<Product> getProducts() {
@@ -99,5 +96,11 @@ public class StoreRestController {
     private void saveAccessory(@RequestBody Accessory accessory) {
 
         accessoryService.saveAccessory(accessory);
+    }
+
+    @GetMapping("/transactions")
+    private List<Transaction> getTransactions() {
+
+        return transactionService.getTransactions();
     }
 }
